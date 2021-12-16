@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form action="/api/users/login">
+        <label>
+            id:
+            <input type="text" name="id" required="required"/>
+        </label>
+        <label>
+            password: (not secured) <!--must be changed-->
+            <input type="password" name="password" required="required"/>
+        </label>
+        <button type="submit">login</button>
+    </form>
+</body>
+</html>
