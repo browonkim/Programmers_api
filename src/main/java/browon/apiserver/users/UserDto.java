@@ -65,6 +65,11 @@ public class UserDto {
         this.createAt = createAt;
     }
 
+    /*
+    * 코드를 짜면서 toString은 대체 왜 구현해놨을까 고민했다.
+    * 실제 서비스 되는 환경에서는 toString은 필요가 없다.
+    * 하지만 debugging을 할 때 객체들의 toString을 구현해두면 유용하다!
+    * */
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
@@ -75,5 +80,4 @@ public class UserDto {
                 .append("createAt", createAt)
                 .toString();
     }
-
 }

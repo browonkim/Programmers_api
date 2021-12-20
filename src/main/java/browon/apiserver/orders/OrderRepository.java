@@ -13,9 +13,11 @@ public interface OrderRepository {
 
     Boolean complete(Order order);
 
-    Optional<Order> findById(long product_id);
+    Optional<Order> findById(long order_id);
 
-    List<Order> findAll();
+    void writeReview(Long order_id, Long review_id);
+
+    List<Order> findAll(long offset, int size, long user_id);
 
 
 }

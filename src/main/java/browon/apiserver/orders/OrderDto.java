@@ -11,7 +11,7 @@ public class OrderDto {
 
     private Long seq;
     private Long productId;
-    private Long review;
+    private Review review;
     private String state;
     private String requestMessage;
     private String rejectMessage;
@@ -35,11 +35,11 @@ public class OrderDto {
         this.productId = productId;
     }
 
-    public Long getReview() {
+    public Review getReview() {
         return review;
     }
 
-    public void setReview(Long review) {
+    public void setReview(Review review) {
         this.review = review;
     }
 

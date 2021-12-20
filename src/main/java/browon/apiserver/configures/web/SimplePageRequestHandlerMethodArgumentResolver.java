@@ -6,6 +6,9 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
+
 public class SimplePageRequestHandlerMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
     private static final String DEFAULT_OFFSET_PARAMETER = "offset";
@@ -36,7 +39,9 @@ public class SimplePageRequestHandlerMethodArgumentResolver implements HandlerMe
         String sizeString = webRequest.getParameter(sizeParameterName);
 
         // TODO 구현이 필요 합니다.
-        throw new UnsupportedOperationException("SimplePageRequest 인스턴스를 리턴하도록 구현 필요");
+        // throw new UnsupportedOperationException("SimplePageRequest 인스턴스를 리턴하도록 구현 필요");
+        return new SimplePageRequest(Long.parseLong(defaultIfNull(offsetString, "0")),
+                Integer.parseInt(defaultIfNull(sizeString, "5")));
     }
 
     public void setOffsetParameterName(String offsetParameterName) {

@@ -6,8 +6,10 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 
 import static java.time.LocalDateTime.now;
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 public class Order {
@@ -15,7 +17,17 @@ public class Order {
     private final Long seq;
     private final Long userId;
     private final Long productId;
-    private Long review;
+    private Long review_seq;
+
+    public Review getReview() {
+        return review;
+    }
+
+    public void setReview(Review review) {
+        this.review = review;
+    }
+
+    private Review review;
     private String state;
     private String requestMessage;
     private String rejectMessage;
@@ -23,12 +35,12 @@ public class Order {
     private LocalDateTime rejectedAt;
     private LocalDateTime createAt;
 
-    public Long getReview() {
-        return review;
+    public Long getReview_seq() {
+        return review_seq;
     }
 
-    public void setReview(Long review) {
-        this.review = review;
+    public void setReview_seq(Long review_seq) {
+        this.review_seq = review_seq;
     }
 
     public String getState() {
@@ -80,13 +92,14 @@ public class Order {
     }
 
     public Order(Long user_Seq, Long productId) {
-        this(null, user_Seq, productId, null, null, null, null, null, null, null);
+        this(null, user_Seq, productId, null, null, null, null, null, null, null, null);
     }
 
-    public Order(Long seq, Long userId, Long productId, Long review, String state, String requestMessage, String rejectMessage, LocalDateTime completedAt, LocalDateTime rejectedAt, LocalDateTime createAt) {
+    public Order(Long seq, Long userId, Long productId, Long review_seq, Review review, String state, String requestMessage, String rejectMessage, LocalDateTime completedAt, LocalDateTime rejectedAt, LocalDateTime createAt) {
         this.seq = seq;
         this.userId = userId;
         this.productId = productId;
+        this.review_seq = review_seq;
         this.review = review;
         this.state = defaultIfNull(state, "REQUESTED");
         this.requestMessage = requestMessage;
@@ -127,6 +140,7 @@ public class Order {
                 .append("seq", seq)
                 .append("userId", userId)
                 .append("productId", productId)
+                .append("reviewId", review_seq)
                 .append("review", review)
                 .append("state", state)
                 .append("requestMessage", requestMessage)
@@ -141,7 +155,8 @@ public class Order {
         private Long seq;
         private Long userId;
         private Long productId;
-        private Long review;
+        private Long review_seq;
+        private Review review;
         private String state;
         private String requestMessage;
         private String rejectMessage;
@@ -155,6 +170,7 @@ public class Order {
             this.seq = order.seq;
             this.userId = order.userId;
             this.productId = order.productId;
+            this.review_seq = order.review_seq;
             this.review = order.review;
             this.state = order.state;
             this.requestMessage = order.requestMessage;
@@ -180,7 +196,12 @@ public class Order {
         }
 
         public Builder review_seq(Long review_seq) {
-            this.review = review_seq;
+            this.review_seq = review_seq;
+            return this;
+        }
+
+        public Builder review(Review review){
+            this.review = review;
             return this;
         }
 
@@ -215,7 +236,7 @@ public class Order {
         }
 
         public Order build() {
-            return new Order(seq, userId, productId, review, state, requestMessage, rejectMessage, completedAt, rejectedAt, createAt);
+            return new Order(seq, userId, productId, review_seq, review, state, requestMessage, rejectMessage, completedAt, rejectedAt, createAt);
         }
     }
 }
