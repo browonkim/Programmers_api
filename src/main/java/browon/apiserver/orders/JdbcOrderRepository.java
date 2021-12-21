@@ -15,7 +15,7 @@ public class JdbcOrderRepository implements OrderRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public JdbcOrderRepository(JdbcTemplate jdbcTemplate){
+    public JdbcOrderRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -29,10 +29,11 @@ public class JdbcOrderRepository implements OrderRepository {
                     order.getSeq()
             );
             return true;
-        } else{
+        } else {
             return false;
         }
     }
+
     @Override
     public Boolean reject(Order order) {
         if (order.getState().equals("REQUESTED")) {
@@ -43,7 +44,7 @@ public class JdbcOrderRepository implements OrderRepository {
                     order.getSeq()
             );
             return true;
-        } else{
+        } else {
             return false;
         }
     }
@@ -58,7 +59,7 @@ public class JdbcOrderRepository implements OrderRepository {
                     order.getSeq()
             );
             return true;
-        } else{
+        } else {
             return false;
         }
     }
@@ -73,7 +74,7 @@ public class JdbcOrderRepository implements OrderRepository {
                     order.getSeq()
             );
             return true;
-        } else{
+        } else {
             return false;
         }
     }
@@ -82,13 +83,13 @@ public class JdbcOrderRepository implements OrderRepository {
     public Optional<Order> findById(long id) {
         //TODO
         /*
-        * userId가 필요없어졌습니다. (id는 order의 primarykey입니다.)
-        * */
+         * userId가 필요없어졌습니다. (id는 order의 primarykey입니다.)
+         * */
         List<Order> result = jdbcTemplate.query(
                 "SELECT * FROM orders WHERE seq=?",
                 mapper,
                 id
-                );
+        );
 
         return ofNullable(result.isEmpty() ? null : result.get(0));
     }
@@ -104,13 +105,39 @@ public class JdbcOrderRepository implements OrderRepository {
 
     @Override
     public List<Order> findAll(long offset, int size, long user_id) {
-        return jdbcTemplate.query(
-                "SELECT * FROM orders WHERE user_id=? ORDER BY seq DESC LIMIT ? OFFSET ?",
+        List<Order> orders = jdbcTemplate.query(
+                "SELECT * FROM orders WHERE user_seq=? ORDER BY seq DESC LIMIT ? OFFSET ?  ",
                 mapper,
                 user_id,
                 size,
                 offset
-                );
+        );
+        for (Order o : orders) {
+            //왜 list.stream().map이나 peek할 때는 안될까? 알아보기
+            List<Review> review = jdbcTemplate.query(
+                    "SELECT * FROM reviews WHERE seq=?",
+                    JdbcReviewRepository.mapper,
+                    o.getReview_seq()
+            );
+            o.setReview(review.isEmpty() ? null : review.get(0));
+        }
+        return orders;
+    }
+
+    @Override
+    public Boolean hasReview(Long order_id) {
+        List<Order> result = jdbcTemplate.query(
+                "SELECT * FROM orders WHERE seq=?",
+                mapper,
+                order_id
+        );
+        Order order = result.isEmpty() ? null : result.get(0);
+        List<Review> review = jdbcTemplate.query(
+                "SELECT * FROM reviews WHERE seq=?",
+                JdbcReviewRepository.mapper,
+                order.getReview_seq()
+        );
+        return !review.isEmpty();
     }
 
     static RowMapper<Order> mapper = (rs, rowNum) ->

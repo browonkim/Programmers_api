@@ -17,6 +17,8 @@ public interface OrderRepository {
 
     void writeReview(Long order_id, Long review_id);
 
+    Boolean hasReview(Long order_id);
+
     List<Order> findAll(long offset, int size, long user_id);
 
 

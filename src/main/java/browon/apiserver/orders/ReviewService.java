@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 @Service
 public class ReviewService {
     private final ReviewRepository reviewRepository;
@@ -18,18 +20,19 @@ public class ReviewService {
         this.orderRepository = orderRepository;
     }
 
-    public Review insert(Long user_id, Long order_id, String content) {
+    public Review insert(Long order_id, String content) {
         Order order = orderRepository.findById(order_id)
                 .orElseThrow(() -> new NotFoundException("Could not found order for " + order_id));
         if (!order.getState().equals("COMPLETED")) {
             throw new IllegalStateException("Could not write review for order " + order_id
-                    + "because state(" + order.getReview() + ") is not allowed");
+                    + " because state(" + order.getState() + ") is not allowed");
         }
-        if (order.getReview_seq() != null) {
+        if (order.getReview_seq() != 0) {
+            System.out.println(order.getReview_seq());
             throw new IllegalStateException("Could not write review for order " + order_id
                     + " because have already written");
         }
-        Review review = reviewRepository.insert(user_id, order_id, content)
+        Review review = reviewRepository.insert(order.getUserId(), order.getProductId(), content)
                 .orElseThrow(() -> new RuntimeException(order_id + "'s review insertion was failed."));
         orderRepository.writeReview(order_id, review.getSeq());
         productRepository.incrementReviewCount(order.getProductId());

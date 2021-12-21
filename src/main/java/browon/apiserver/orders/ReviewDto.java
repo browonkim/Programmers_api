@@ -16,7 +16,7 @@ public class ReviewDto {
 
     public ReviewDto(Review source) {
         this.seq = source.getSeq();
-        this.productId = source.getProduct_seq();
+        this.productId = source.getProductId();
         this.content = source.getContent();
         this.createAt = source.getCreate_at();
     }

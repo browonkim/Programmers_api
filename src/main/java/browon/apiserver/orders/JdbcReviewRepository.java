@@ -39,14 +39,14 @@ public class JdbcReviewRepository implements ReviewRepository {
     }
 
     @Override
-    public Optional<Review> insert(Long user_id, Long product_id, String content) {
+    public Optional<Review> insert(Long userId, Long productId, String content) {
         jdbcTemplate.update(
-                "INSERT INTO reviews(user_seq, product_seq, content) VALUES(?,?,?)",
-                user_id,
-                product_id,
+                "INSERT INTO reviews(seq, user_seq, product_seq, content) VALUES (null, ?,?,?)",
+                userId,
+                productId,
                 content
         );
-        return this.findByProductAndSeq(user_id, product_id);
+        return this.findByProductAndSeq(userId, productId);
     }
 
     static RowMapper<Review> mapper = (rs, rowNum) ->
